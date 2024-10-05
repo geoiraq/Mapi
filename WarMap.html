@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خارطة تفاعلية مع شريط زمني</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap');
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #header {
+            background: linear-gradient(45deg, #1a237e, #4a148c);
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            font-family: 'Amiri', serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #header h1 {
+            font-size: 1.5em;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        #header h1 span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #header::before,
+        #header::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        #header::before {
+            left: -25px;
+            top: -25px;
+        }
+
+        #header::after {
+            right: -25px;
+            bottom: -25px;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 50px);
+            width: 100%;
+        }
+
+        #map {
+            flex: 1;
+            height: 100%;
+            min-height: 300px;
+        }
+
+        #sidebar {
+            width: 100%;
+            padding: 10px;
+            background-color: #f8f8f8;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        .custom-popup .leaflet-popup-content-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            font-size: 14px;
+            line-height: 24px;
+            border-radius: 8px;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+        }
+
+        .custom-popup .leaflet-popup-content {
+            margin: 15px 20px;
+        }
+
+        .custom-popup .leaflet-popup-tip-container {
+            width: 30px;
+            height: 15px;
+        }
+
+        .custom-popup .leaflet-popup-tip {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .event-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #0078A8;
+            border-bottom: 2px solid #0078A8;
+            padding-bottom: 5px;
+        }
+
+        .event-details {
+            margin-bottom: 8px;
+        }
+
+        .event-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .event-value {
+            color: #333;
+        }
+
+        .coordinates {
+            padding: 8px 12px;
+            background: white;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        #date-filter,
+        #area-filter {
+            margin-bottom: 10px;
+        }
+
+        #events-list {
+            margin-top: 10px;
+        }
+
+        .event-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        #show-all-data {
+            background-color: #0078A8;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        #show-all-data:hover {
+            background-color: #005f86;
+        }
+
+        .leaflet-control-layers-toggle {
+            width: 36px;
+            height: 36px;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 1px;
+            border-radius: 2px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+        }
+
+        .sidebar-toggle img {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        @media (min-width: 768px) {
+            #container {
+                flex-direction: row;
+            }
+
+            #sidebar {
+                width: 300px;
+                max-height: none;
+            }
+
+            #header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header">
+        <h1 id="animated-title">يا صاحب الزمان</h1>
+    </header>
+    <div id="container">
+        <div id="sidebar" style="display: none;">
+            <h2>تصفية الأحداث</h2>
+            <button id="show-all-data">عرض جميع البيانات</button>
+            <div id="date-filter">
+                <label for="date-select">اختر التاريخ:</label>
+                <input type="date" id="date-select">
+            </div>
+            <div id="area-filter">
+                <label for="area-select">اختر المنطقة:</label>
+                <select id="area-select">
+                    <option value="">جميع المناطق</option>
+                </select>
+            </div>
+            <div id="events-list"></div>
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script>
+        var map = L.map('map').setView([33.312805, 44.361488], 6);
+
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; لبيك يانصر الله'
+        });
+
+        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        var baseMaps = {
+            "OpenStreetMap": osm,
+            "صورة فضائية": satellite
+        };
+
+        osm.addTo(map);
+
+        L.control.layers(baseMaps).addTo(map);
+
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        var drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: drawnItems
+            },
+            draw: {
+                polygon: true,
+                polyline: true,
+                rectangle: true,
+                circle: true,
+                marker: true
+            }
+        });
+        map.addControl(drawControl);
+
+        map.on('draw:created', function (e) {
+            var layer = e.layer;
+            drawnItems.addLayer(layer);
+        });
+
+        L.control.scale().addTo(map);
+
+        var coordinates = L.control({position: 'bottomleft'});
+        coordinates.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'coordinates');
+            this.update();
+            return this._div;
+        };
+        coordinates.update = function (lat, lng) {
+            function toDegreesMinutesSeconds(coordinate) {
+                var absolute = Math.abs(coordinate);
+                var degrees = Math.floor(absolute);
+                var minutesNotTruncated = (absolute - degrees) * 60;
+                var minutes = Math.floor(minutesNotTruncated);
+                var seconds = Math.floor((minutesNotTruncated - minutes) * 60);
+                return degrees + "°" + minutes + "'" + seconds + "\"";
+            }
+            this._div.innerHTML = lat && lng ? 'خط العرض: ' + toDegreesMinutesSeconds(lat) + 
+                '<br>خط الطول: ' + toDegreesMinutesSeconds(lng) : 'حرك الماوس فوق الخريطة';
+        };
+        coordinates.addTo(map);
+
+        map.on('mousemove', function(e) {
+            coordinates.update(e.latlng.lat, e.latlng.lng);
+        });
+
+        var markers = L.layerGroup().addTo(map);
+        var allEvents = [];
+        var lastModified = null;
+
+        function loadExcelData() {
+            fetch('https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/map/data.xlsx', { method: 'HEAD' })
+                .then(response => {
+                    var currentLastModified = response.headers.get('Last-Modified');
+                    if (currentLastModified !== lastModified) {
+                        lastModified = currentLastModified;
+                        return fetch('https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/map/data.xlsx');
+                    } else {
+                        return Promise.reject('لم يتم تعديل الملف');
+                    }
+                })
+                .then(response => response.arrayBuffer())
+                .then(data => {
+                    var workbook = XLSX.read(data, {type: 'array'});
+                    var firstSheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[firstSheetName];
+                    var excelData = XLSX.utils.sheet_to_json(worksheet, {raw: false, dateNF: 'yyyy-mm-dd hh:mm:ss'});
+
+                    allEvents = [];
+                    var areas = new Set();
+
+                    excelData.forEach(function(row) {
+                        if (row.lat && row.long) {
+                            var eventTime = row['وقت الحدث'] || row['وقت_الحدث'] || row['الوقت'] || 'غير محدد';
+                            var eventArea = row['المنطقة'] || 'غير محددة';
+                            var eventTitle = row.الحدث || 'حدث غير معروف';
+                            var eventDescription = row['وصف الحدث'] || row['وصف_الحدث'] || row['الوصف'] || 'غير محدد';
+
+                            var eventDate = new Date(eventTime);
+                            var formattedDate = eventDate.toISOString().split('T')[0];
+
+                            var event = {
+                                lat: parseFloat(row.lat),
+                                long: parseFloat(row.long),
+                                title: eventTitle,
+                                time: eventTime,
+                                date: formattedDate,
+                                area: eventArea,
+                                description: eventDescription,
+                            };
+
+                            allEvents.push(event);
+                            areas.add(eventArea);
+                        }
+                    });
+
+                    updateAreaFilter(areas);
+                    updateEventsList(allEvents);
+                    addMarkersToMap(allEvents);
+                })
+                .catch(error => {
+                    if (error !== 'لم يتم تعديل الملف') {
+                        console.error('Error:', error);
+                    }
+                });
+        }
+
+        loadExcelData();
+        setInterval(loadExcelData, 5000);
+
+        function addMarkersToMap(events) {
+            markers.clearLayers();
+            events.forEach(function(event) {
+                var iconUrl = event.title === 'كمين' ? 'https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/map/images/icon2.png' : 'https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/map/images/icon.png';
+                
+                var marker = L.marker([event.lat, event.long], {
+                    icon: L.divIcon({
+                        html: `<img src="${iconUrl}" style="width:30px;height:30px;">`,
+                        className: 'custom-icon',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 30],
+                        popupAnchor: [0, -30]
+                    })
+                });
+                var popupContent = `
+                    <div class="event-title">${event.title}</div>
+                    <div class="event-details">
+                        <span class="event-label">الوقت:</span>
+                        <span class="event-value">${event.time}</span>
+                    </div>
+                    <div class="event-details">
+                        <span class="event-label">المنطقة:</span>
+                        <span class="event-value">${event.area}</span>
+                    </div>
+                    <div class="event-details">
+                        <span class="event-label">الوصف:</span>
+                        <span class="event-value">${event.description}</span>
+                    </div>
+                `;
+                marker.bindPopup(popupContent, {
+                    className: 'custom-popup',
+                    maxWidth: 300
+                });
+                markers.addLayer(marker);
+            });
+        }
+
+        function updateEventsList(events) {
+            var eventsListElement = document.getElementById('events-list');
+            eventsListElement.innerHTML = '';
+
+            events.forEach(function(event) {
+                var eventElement = document.createElement('div');
+                eventElement.className = 'event-item';
+                eventElement.innerHTML = `
+                    <div class="event-title">${event.title}</div>
+                    <div class="event-details">
+                        <span class="event-label">الوقت:</span>
+                        <span class="event-value">${event.time}</span>
+                    </div>
+                    <div class="event-details">
+                        <span class="event-label">المنطقة:</span>
+                        <span class="event-value">${event.area}</span>
+                    </div>
+                    <div class="event-details">
+                        <span class="event-label">الوصف:</span>
+                        <span class="event-value">${event.description}</span>
+                    </div>
+                `;
+                eventsListElement.appendChild(eventElement);
+            });
+        }
+
+        function updateAreaFilter(areas) {
+            var areaSelect = document.getElementById('area-select');
+            areaSelect.innerHTML = '<option value="">جميع المناطق</option>';
+            areas.forEach(function(area) {
+                var option = document.createElement('option');
+                option.value = area;
+                option.textContent = area;
+                areaSelect.appendChild(option);
+            });
+        }
+
+        function filterEvents() {
+            var selectedDate = document.getElementById('date-select').value;
+            var selectedArea = document.getElementById('area-select').value;
+
+            var filteredEvents = allEvents.filter(function(event) {
+                var dateMatch = !selectedDate || event.date === selectedDate;
+                var areaMatch = !selectedArea || event.area === selectedArea;
+                return dateMatch && areaMatch;
+            });
+
+            updateEventsList(filteredEvents);
+            addMarkersToMap(filteredEvents);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const title = document.getElementById('animated-title');
+            const text = title.innerText;
+            title.innerHTML = '';
+            const words = text.split(' ');
+            words.forEach((word, index) => {
+                const span = document.createElement('span');
+                span.textContent = word + ' ';
+                span.style.animationDelay = `${index * 0.2}s`;
+                title.appendChild(span);
+            });
+
+            var sidebarToggle = L.control({position: 'bottomright'});
+            sidebarToggle.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'sidebar-toggle');
+                div.innerHTML = '<img src="https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/filter.png" alt="تصفية الاحداث">';
+                div.onclick = function() {
+                    var sidebar = document.getElementById('sidebar');
+                    sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+                };
+                return div;
+            };
+            sidebarToggle.addTo(map);
+        });
+
+        document.getElementById('date-select').addEventListener('change', filterEvents);
+        document.getElementById('area-select').addEventListener('change', filterEvents);
+
+        document.getElementById('show-all-data').addEventListener('click', function() {
+            document.getElementById('date-select').value = '';
+            document.getElementById('area-select').value = '';
+            updateEventsList(allEvents);
+            addMarkersToMap(allEvents);
+        });
+
+        window.addEventListener('resize', function() {
+            map.invalidateSize();
+        });
+    </script>
+</body>
+
+</html>
