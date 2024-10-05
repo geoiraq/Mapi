@@ -317,12 +317,12 @@
         var lastModified = null;
 
         function loadExcelData() {
-            fetch('https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/map/data.xlsx', { method: 'HEAD' })
+            fetch('data.xlsx', { method: 'HEAD' })
                 .then(response => {
                     var currentLastModified = response.headers.get('Last-Modified');
                     if (currentLastModified !== lastModified) {
                         lastModified = currentLastModified;
-                        return fetch('https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/map/data.xlsx');
+                        return fetch('data.xlsx');
                     } else {
                         return Promise.reject('لم يتم تعديل الملف');
                     }
@@ -379,7 +379,7 @@
         function addMarkersToMap(events) {
             markers.clearLayers();
             events.forEach(function(event) {
-                var iconUrl = event.title === 'كمين' ? 'https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/map/images/icon2.png' : 'https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/map/images/icon.png';
+                var iconUrl = event.title === 'كمين' ? 'icon2.png' : 'icon.png';
                 
                 var marker = L.marker([event.lat, event.long], {
                     icon: L.divIcon({
@@ -479,7 +479,7 @@
             var sidebarToggle = L.control({position: 'bottomright'});
             sidebarToggle.onAdd = function (map) {
                 var div = L.DomUtil.create('div', 'sidebar-toggle');
-                div.innerHTML = '<img src="https://panel.freehosting.com:2222/CMD_FILE_MANAGER?path=/domains/geomapi.me/public_html/filter.png" alt="تصفية الاحداث">';
+                div.innerHTML = '<img src="filter.png" alt="تصفية الاحداث">';
                 div.onclick = function() {
                     var sidebar = document.getElementById('sidebar');
                     sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
