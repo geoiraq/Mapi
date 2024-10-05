@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,151 +9,123 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap');
 
-        html,
-        body {
-            height: 100%;
-            width: 100%;
+        html, body { 
+            height: 100%; 
+            width: 100%; 
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         #header {
             background: linear-gradient(45deg, #1a237e, #4a148c);
             color: #fff;
             text-align: center;
-            padding: 5px 0;
+            padding: 2px 0;
             font-family: 'Amiri', serif;
             position: relative;
             overflow: hidden;
         }
-
         #header h1 {
-            font-size: 1.5em;
+            font-size: 2.5em;
             margin: 0;
             padding: 0;
             position: relative;
             display: inline-block;
         }
-
         #header h1 span {
             display: inline-block;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 1s forwards;
         }
-
         @keyframes fadeInUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        #header::before,
-        #header::after {
+        #header::before, #header::after {
             content: '';
             position: absolute;
-            width: 50px;
-            height: 50px;
+            width: 200px;
+            height: 200px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
         }
-
         #header::before {
-            left: -25px;
-            top: -25px;
+            left: -100px;
+            top: -100px;
         }
-
         #header::after {
-            right: -25px;
-            bottom: -25px;
+            right: -100px;
+            bottom: -100px;
         }
-
         #container {
             display: flex;
-            flex-direction: column;
-            height: calc(100% - 50px);
+            height: calc(100% - 80px); /* Adjusted for header */
             width: 100%;
         }
-
-        #map {
+        #map { 
             flex: 1;
             height: 100%;
-            min-height: 300px;
         }
-
         #sidebar {
-            width: 100%;
-            padding: 10px;
+            width: 300px;
+            padding: 20px;
             background-color: #f8f8f8;
             overflow-y: auto;
-            max-height: 200px;
         }
-
         .custom-popup .leaflet-popup-content-wrapper {
             background: rgba(255, 255, 255, 0.95);
             color: #333;
             font-size: 14px;
             line-height: 24px;
             border-radius: 8px;
-            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 3px 14px rgba(0,0,0,0.4);
         }
-
         .custom-popup .leaflet-popup-content {
             margin: 15px 20px;
         }
-
         .custom-popup .leaflet-popup-tip-container {
             width: 30px;
             height: 15px;
         }
-
         .custom-popup .leaflet-popup-tip {
             background: rgba(255, 255, 255, 0.95);
         }
-
         .event-title {
             font-weight: bold;
-            font-size: 16px;
+            font-size: 18px;
             margin-bottom: 10px;
             color: #0078A8;
             border-bottom: 2px solid #0078A8;
             padding-bottom: 5px;
         }
-
         .event-details {
             margin-bottom: 8px;
         }
-
         .event-label {
             font-weight: bold;
             color: #555;
         }
-
         .event-value {
             color: #333;
         }
-
-        .coordinates {
-            padding: 8px 12px;
-            background: white;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            font-size: 10px;
+        .coordinates { 
+            padding: 8px 12px; 
+            background: white; 
+            background: rgba(255,255,255,0.9); 
+            box-shadow: 0 0 15px rgba(0,0,0,0.2); 
+            border-radius: 5px; 
+            font-size: 12px;
             line-height: 1.5;
         }
-
-        #date-filter,
-        #area-filter {
-            margin-bottom: 10px;
+        #date-filter, #area-filter {
+            margin-bottom: 20px;
         }
-
         #events-list {
-            margin-top: 10px;
+            margin-top: 20px;
         }
-
         .event-item {
             background-color: #fff;
             border: 1px solid #ddd;
@@ -162,7 +133,6 @@
             margin-bottom: 10px;
             border-radius: 5px;
         }
-
         #show-all-data {
             background-color: #0078A8;
             color: white;
@@ -170,60 +140,21 @@
             padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             font-size: 16px;
             width: 100%;
         }
-
         #show-all-data:hover {
             background-color: #005f86;
         }
-
-        .leaflet-control-layers-toggle {
-            width: 36px;
-            height: 36px;
-        }
-
-        .sidebar-toggle {
-            position: absolute;
-            bottom: 30px;
-            right: 10px;
-            z-index: 1000;
-            background: white;
-            padding: 1px;
-            border-radius: 2px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-        }
-
-        .sidebar-toggle img {
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-        }
-
-        @media (min-width: 768px) {
-            #container {
-                flex-direction: row;
-            }
-
-            #sidebar {
-                width: 300px;
-                max-height: none;
-            }
-
-            #header h1 {
-                font-size: 2em;
-            }
-        }
     </style>
 </head>
-
 <body>
     <header id="header">
         <h1 id="animated-title">يا صاحب الزمان</h1>
     </header>
     <div id="container">
-        <div id="sidebar" style="display: none;">
+        <div id="sidebar">
             <h2>تصفية الأحداث</h2>
             <button id="show-all-data">عرض جميع البيانات</button>
             <div id="date-filter">
@@ -312,6 +243,14 @@
             coordinates.update(e.latlng.lat, e.latlng.lng);
         });
 
+        var customIcon = L.divIcon({
+            html: '<img src="icon.png" style="width:30px;height:30px;">',
+            className: 'custom-icon',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30]
+        });
+
         var markers = L.layerGroup().addTo(map);
         var allEvents = [];
         var lastModified = null;
@@ -334,15 +273,20 @@
                     var worksheet = workbook.Sheets[firstSheetName];
                     var excelData = XLSX.utils.sheet_to_json(worksheet, {raw: false, dateNF: 'yyyy-mm-dd hh:mm:ss'});
 
+                    console.log('Excel Data:', excelData);
+
                     allEvents = [];
                     var areas = new Set();
 
                     excelData.forEach(function(row) {
+                        console.log('Row:', row);
+
                         if (row.lat && row.long) {
                             var eventTime = row['وقت الحدث'] || row['وقت_الحدث'] || row['الوقت'] || 'غير محدد';
                             var eventArea = row['المنطقة'] || 'غير محددة';
                             var eventTitle = row.الحدث || 'حدث غير معروف';
-                            var eventDescription = row['وصف الحدث'] || row['وصف_الحدث'] || row['الوصف'] || 'غير محدد';
+                             var eventDescription = row['وصف الحدث'] || row['وصف_الحدث'] || row['الوصف'] || 'غير محدد';
+                            console.log('وصف الحدث:', eventDescription); // تأكد من أن الوصف يُطبع بشكل صحيح
 
                             var eventDate = new Date(eventTime);
                             var formattedDate = eventDate.toISOString().split('T')[0];
@@ -373,23 +317,26 @@
                 });
         }
 
+        // تحميل البيانات للمرة الأولى
         loadExcelData();
+
+        // فحص التحديثات كل 5 ثانية
         setInterval(loadExcelData, 5000);
 
         function addMarkersToMap(events) {
-            markers.clearLayers();
-            events.forEach(function(event) {
-                var iconUrl = event.title === 'كمين' ? 'icon2.png' : 'icon.png';
-                
-                var marker = L.marker([event.lat, event.long], {
-                    icon: L.divIcon({
-                        html: `<img src="${iconUrl}" style="width:30px;height:30px;">`,
-                        className: 'custom-icon',
-                        iconSize: [30, 30],
-                        iconAnchor: [15, 30],
-                        popupAnchor: [0, -30]
-                    })
-                });
+    markers.clearLayers();
+    events.forEach(function(event) {
+        var iconUrl = event.title === 'كمين' ? 'icon2.png' : 'icon.png'; // استخدام الأيقونة الجديدة إذا كان العنوان "كمين"
+        
+        var marker = L.marker([event.lat, event.long], {
+            icon: L.divIcon({
+                html: `<img src="${iconUrl}" style="width:30px;height:30px;">`,
+                className: 'custom-icon',
+                iconSize: [30, 30],
+                iconAnchor: [15, 30],
+                popupAnchor: [0, -30]
+            })
+        });
                 var popupContent = `
                     <div class="event-title">${event.title}</div>
                     <div class="event-details">
@@ -463,7 +410,6 @@
             updateEventsList(filteredEvents);
             addMarkersToMap(filteredEvents);
         }
-
         document.addEventListener('DOMContentLoaded', function() {
             const title = document.getElementById('animated-title');
             const text = title.innerText;
@@ -475,20 +421,7 @@
                 span.style.animationDelay = `${index * 0.2}s`;
                 title.appendChild(span);
             });
-
-            var sidebarToggle = L.control({position: 'bottomright'});
-            sidebarToggle.onAdd = function (map) {
-                var div = L.DomUtil.create('div', 'sidebar-toggle');
-                div.innerHTML = '<img src="filter.png" alt="تصفية الاحداث">';
-                div.onclick = function() {
-                    var sidebar = document.getElementById('sidebar');
-                    sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
-                };
-                return div;
-            };
-            sidebarToggle.addTo(map);
         });
-
         document.getElementById('date-select').addEventListener('change', filterEvents);
         document.getElementById('area-select').addEventListener('change', filterEvents);
 
@@ -504,5 +437,4 @@
         });
     </script>
 </body>
-
 </html>
