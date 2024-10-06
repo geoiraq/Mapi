@@ -1,0 +1,80 @@
+/* Font import and basic setup */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap');
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+/* Header styling */
+#header {
+    background: linear-gradient(45deg, #1a237e, #4a148c);
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    font-family: 'Amiri', serif;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header animation */
+#header h1 span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Layout */
+#container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 50px);
+    width: 100%;
+}
+
+#map {
+    flex: 1;
+    height: 100%;
+    min-height: 300px;
+}
+
+#sidebar {
+    width: 100%;
+    padding: 10px;
+    background-color: #f8f8f8;
+    overflow-y: auto;
+    max-height: 200px;
+}
+/* Custom popup styling */
+.custom-popup .leaflet-popup-content-wrapper {
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    font-size: 14px;
+    line-height: 24px;
+    border-radius: 8px;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+}
+/* Responsive design */
+@media (min-width: 768px) {
+    #container {
+        flex-direction: row;
+    }
+
+    #sidebar {
+        width: 300px;
+        max-height: none;
+    }
+
+    #header h1 {
+        font-size: 2em;
+    }
+}
