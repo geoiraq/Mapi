@@ -7,40 +7,27 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    background-color: #f0f4f8;
+    background-color: #e9eff1;
 }
 
 #header {
-    background: linear-gradient(45deg, #005f73, #0a9396);
+    background: linear-gradient(45deg, #004d40, #00796b);
     color: #fff;
     text-align: center;
     padding: 15px 0;
-    font-family: 'Roboto', sans-serif;
-    position: relative;
-    overflow: hidden;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 #header h1 {
-    font-size: 2em;
+    font-size: 2.5em;
     margin: 0;
     padding: 0;
-    position: relative;
-    display: inline-block;
-}
-
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 #container {
     display: flex;
     flex-direction: column;
     height: calc(100% - 60px);
-    width: 100%;
 }
 
 #map {
@@ -50,12 +37,11 @@ body {
 
 #sidebar {
     width: 100%;
-    padding: 15px;
+    padding: 20px;
     background-color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
-    max-height: 250px;
 }
 
 .custom-popup .leaflet-popup-content-wrapper {
@@ -71,8 +57,8 @@ body {
     font-weight: bold;
     font-size: 18px;
     margin-bottom: 10px;
-    color: #005f73;
-    border-bottom: 2px solid #005f73;
+    color: #004d40;
+    border-bottom: 2px solid #004d40;
     padding-bottom: 5px;
 }
 
@@ -90,20 +76,19 @@ body {
 }
 
 #show-all-data {
-    background-color: #0a9396;
+    background-color: #00796b;
     color: white;
     border: none;
     padding: 12px 18px;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 10px;
-    font-size: 16px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
     width: 100%;
 }
 
 #show-all-data:hover {
-    background-color: #005f73;
+    background-color: #004d40;
+    transform: scale(1.05);
 }
 
 .sidebar-toggle {
