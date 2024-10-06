@@ -1,82 +1,74 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الدرة الساطعة</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="logo.png" type="image/png">
-    <style>
-        #welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('image.jpg');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
 
-        #welcome-text {
-            font-family: 'Noto Naskh Arabic', 'Arial', sans-serif;
-            font-size: 3rem;
-            color: white;
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 20px;
-            border-radius: 10px;
-        }
+<meta charset="UTF-8">
 
-        #main-content {
-            display: none;
-        }
-    </style>
-</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الدرة الساطعة</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+
+<link rel="stylesheet" href="styles.css">
+
+<link rel="icon" href="logo.png" type="image/png">
+
 <body>
-    <div id="welcome-screen">
-        <div id="welcome-text">الأحداث اليومية لمنجزات المقاومة الإسلامية</div>
-    </div>
 
-    <div id="main-content">
-        <header id="header">
-            <h1 id="animated-title">يا صاحب الزمان</h1>
-        </header>
-        <div id="container">
-            <div id="sidebar" style="display: none;">
-                <h2>تصفية الأحداث</h2>
-                <button id="show-all-data">عرض جميع البيانات</button>
-                <div id="date-filter">
-                    <label for="date-select">اختر التاريخ:</label>
-                    <input type="date" id="date-select">
-                </div>
-                <div id="area-filter">
-                    <label for="area-select">اختر المنطقة:</label>
-                    <select id="area-select">
-                        <option value="">جميع المناطق</option>
-                    </select>
-                </div>
-                <div id="events-list"></div>
-            </div>
-            <div id="map"></div>
-        </div>
-    </div>
+<header id="header">
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-    <script src="script.js"></script>
-    <script>
-        setTimeout(function() {
-            document.getElementById('welcome-screen').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-        }, 5000);
-    </script>
+<h1 id="animated-title">يا صاحب الزمان</h1>
+
+</header>
+
+<div id="container">
+
+<div id="sidebar" style="display: none;">
+
+<h2>تصفية الأحداث</h2>
+
+<button id="show-all-data">عرض جميع البيانات</button>
+
+<div id="date-filter">
+
+<label for="date-select">اختر التاريخ:</label>
+
+<input type="date" id="date-select">
+
+</div>
+
+<div id="area-filter">
+
+<label for="area-select">اختر المنطقة:</label>
+
+<select id="area-select">
+
+<option value="">جميع المناطق</option>
+
+</select>
+
+</div>
+
+<div id="events-list"></div>
+
+</div>
+
+<div id="map"></div>
+
+</div>
+
+xml
+
+Copy
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="script.js"></script>
 </body>
+
 </html>
