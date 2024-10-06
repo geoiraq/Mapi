@@ -79,25 +79,26 @@ body {
     background: linear-gradient(45deg, #00796b, #004d40);
     color: white;
     border: none;
-    padding: 15px 20px; /* زيادة padding */
-    border-radius: 8px; /* زوايا مستديرة */
+    padding: 15px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease, filter 0.2s ease;
     font-size: 16px;
-    font-weight: bold; /* جعل النص عريضًا */
+    font-weight: bold;
     width: 100%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* إضافة ظل */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 #show-all-data:hover {
-    background: linear-gradient(45deg, #004d40, #00796b); /* تغيير اللون عند التمرير */
-    transform: translateY(-2px); /* رفع الزر قليلاً */
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* زيادة الظل عند التمرير */
+    background: linear-gradient(45deg, #004d40, #00796b);
+    transform: translateY(-2px) rotate(1deg); /* إضافة تأثير دوران */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* زيادة الظل عند التمرير */
 }
 
 #show-all-data:active {
-    transform: translateY(0); /* إعادة الزر إلى مكانه عند الضغط */
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* تقليل الظل عند الضغط */
+    transform: translateY(0) rotate(0); /* إعادة الزر إلى وضعه الطبيعي */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    filter: brightness(95%); /* جعل الزر أغمق عند الضغط */
 }
 
 .sidebar-toggle {
